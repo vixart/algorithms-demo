@@ -1,0 +1,228 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 214, 219, 220;
+  --background-end-rgb: 255, 255, 255;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --foreground-rgb: 255, 255, 255;
+    --background-start-rgb: 0, 0, 0;
+    --background-end-rgb: 0, 0, 0;
+  }
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: linear-gradient(
+      to bottom,
+      transparent,
+      rgb(var(--background-end-rgb))
+    )
+    rgb(var(--background-start-rgb));
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 0;
+  height: 0;
+  border-left: 0.5rem solid transparent;
+  border-right: 0.5rem solid transparent;
+  border-top: 1.5rem solid theme("colors.primary.7");
+  border-radius: 50%;
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+  border-top: 1.5rem solid theme("colors.primary.9");
+}
+
+input[type="range"]::-moz-range-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 0;
+  height: 0;
+  border-left: 0.5rem solid transparent;
+  border-right: 0.5rem solid transparent;
+  border-top: 1.5rem solid theme("colors.primary.7");
+  border-radius: 50%;
+}
+
+input[type="range"]::-moz-range-thumb:hover {
+  border-top: 1.5rem solid theme("colors.primary.9");
+}
+
+.speedometer {
+  -webkit-appearance: none;
+  background: rgb(131, 58, 180);
+  background: linear-gradient(
+    90deg,
+    rgba(131, 58, 180, 0.5998774509803921) 0%,
+    rgba(253, 29, 29, 0.5970763305322129) 50%,
+    rgba(252, 176, 69, 0.5970763305322129) 100%
+  );
+}
+
+.prevent-select {
+  -webkit-user-select: none; /* Safari */
+  -ms-user-select: none; /* IE 10 and IE 11 */
+  user-select: none; /* Standard syntax */
+}
+
+.empty {
+  --tw-bg-opacity: 1;
+  background-color: rgb(241 245 249 / var(--tw-bg-opacity));
+}
+
+.empty.animation {
+  animation-name: emptyAnimation;
+  animation-duration: 0.3s;
+  animation-timing-function: ease-out;
+  animation-delay: 0;
+  animation-direction: alternate;
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards;
+  animation-play-state: running;
+}
+
+.wall {
+  --tw-bg-opacity: 1;
+  background-color: rgb(51 65 85 / var(--tw-bg-opacity));
+  border-color: rgb(51 65 85 / var(--tw-bg-opacity));
+}
+
+.wall.animation {
+  animation-name: wallAnimation;
+  animation-duration: 0.3s;
+  animation-timing-function: ease-out;
+  animation-delay: 0;
+  animation-direction: alternate;
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards;
+  animation-play-state: running;
+}
+
+.pathfinder-table {
+  --tw-bg-opacity: 1;
+  border-width: 7px;
+  border-color: rgb(51 65 85 / var(--tw-bg-opacity));
+}
+
+.start {
+  --tw-bg-opacity: 1;
+  background-image: url("/icons/start.svg");
+  background-color: rgb(241 245 249 / var(--tw-bg-opacity));
+  background-repeat: no-repeat;
+  background-size: 100%;
+  background-position: center;
+}
+
+.finish {
+  --tw-bg-opacity: 1;
+  background-image: url("/icons/target.svg");
+  background-color: rgb(241 245 249 / var(--tw-bg-opacity));
+  background-repeat: no-repeat;
+  background-size: 100%;
+  background-position: center;
+}
+
+.start.animation {
+  transition: all 0.2s;
+  background-size: 50%;
+}
+
+.finish.animation {
+  transition: all 0.2s;
+  background-size: 50%;
+}
+
+.current {
+  background-color: red !important;
+}
+
+.queued {
+  @apply bg-sup1-6;
+  @apply border-sup1-7;
+}
+
+.diagonal-split-background {
+  background-image: -webkit-linear-gradient(30deg, bau 50%, #0a558c 50%);
+}
+
+@keyframes emptyAnimation {
+  0% {
+    transform: scale(0.3);
+  }
+  50% {
+    transform: scale(1.5);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes wallAnimation {
+  0% {
+    transform: scale(0.3);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.empty.random-color0 {
+  background-color: #ea899a;
+  border-color: #ea899a;
+}
+
+.empty.random-color1 {
+  background-color: #d9c6dd;
+  border-color: #d9c6dd;
+}
+
+.empty.random-color2 {
+  background-color: #abc2f1;
+  border-color: #abc2f1;
+}
+
+.empty.random-color3 {
+  background-color: #a4fcbb;
+  border-color: #a4fcbb;
+}
+
+.empty.random-color4 {
+  background-color: #8cf9ea;
+  border-color: #8cf9ea;
+}
+
+.empty.random-color5 {
+  background-color: #e8c7ce;
+  border-color: #e8c7ce;
+}
+
+.empty.random-color6 {
+  background-color: #eac37c;
+  border-color: #eac37c;
+}
+
+.empty.random-color7 {
+  background-color: #f8eda8;
+  border-color: #f8eda8;
+}
+
+.empty.random-color8 {
+  background-color: #9df966;
+  border-color: #9df966;
+}
+
+.empty.random-color9 {
+  background-color: #e0fea5;
+  border-color: #e0fea5;
+}
