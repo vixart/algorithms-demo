@@ -60,9 +60,9 @@ class Grid {
   }
 
   setFinish(cell: Cell) {
-    let oldStart = this.finish;
+    let oldFinish = this.finish;
     this.finish = cell;
-    oldStart.updatePoke();
+    oldFinish.updatePoke();
     this.finish.updatePoke();
   }
 

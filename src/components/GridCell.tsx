@@ -25,10 +25,10 @@ const GridCell: FC<Props> = observer(({ cell, grid, brush }) => {
     if (grid.checkCellIsStart(cell) && brush.isStart) return "animation";
     if (grid.checkCellIsFinish(cell) && brush.isFinish) return "animation";
     if (!grid.checkCellIsStart(cell) && !grid.checkCellIsFinish(cell)) {
-      if (cell.isEmpty && (!brush.isStart || brush.isFinish))
-        return "animation";
+      if (cell.isEmpty && !brush.isStart && !brush.isFinish) return "animation";
       if (cell.isWall) return "animation";
     }
+    return "";
   };
 
   const onMouseDown = () => {
