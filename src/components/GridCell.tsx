@@ -21,7 +21,7 @@ const GridCell: FC<Props> = observer(({ cell, grid, brush }) => {
   };
 
   const animation = () => {
-    if (!getAnimationOn()) return "";
+    if (!getAnimationOn() || !cell.isAnimated) return "";
     if (grid.checkCellIsStart(cell) && brush.isStart) return "animation";
     if (grid.checkCellIsFinish(cell) && brush.isFinish) return "animation";
     if (!grid.checkCellIsStart(cell) && !grid.checkCellIsFinish(cell)) {

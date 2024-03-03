@@ -32,21 +32,3 @@ export const GridBoard: FC<Props> = ({ grid }): JSX.Element => {
     </table>
   );
 };
-
-// return (
-//   <td
-//     onMouseOver={() => {
-//       if (localStorage.getItem("isMouseDown") === "true") {
-//         grid.setWallByCoords(rowId, colId);
-//       }
-//     }}
-//     id={`${rowId}-${colId}`}
-//     key={`${rowId}-${colId}`}
-//     width={25}
-//     height={25}
-//     className={
-//       "p-0 border border-slate-500 border-solid " +
-//       (grid.isWallByCoord(rowId, colId) ? "wall" : "")
-//     }
-//   ></td>
-// );

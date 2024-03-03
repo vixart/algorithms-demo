@@ -86,6 +86,19 @@ const DDMaze: FC<Props> = ({ grid }): JSX.Element => {
                     active ? "bg-neutral-10 text-neutral-1" : "text-neutral-3",
                     "block px-4 py-2 text-sm cursor-pointer"
                   )}
+                  onClick={() => grid.genPrim()}
+                >
+                  {`Prim's Algorithm`}
+                </div>
+              )}
+            </Menu.Item>
+            <Menu.Item>
+              {({ active }) => (
+                <div
+                  className={classNames(
+                    active ? "bg-neutral-10 text-neutral-1" : "text-neutral-3",
+                    "block px-4 py-2 text-sm cursor-pointer"
+                  )}
                   onClick={() => grid.genBinaryTree()}
                 >
                   Binary Tree

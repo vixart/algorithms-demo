@@ -8,6 +8,7 @@ import { delayFactory } from "@/libs/delay";
 import { setAnimationOff, setAnimationOn } from "./localstorage";
 import { shuffleArray } from "@/libs/helper";
 import { Tree } from "@/libs/tree";
+import { dir } from "console";
 
 enum Entity {
   Empty = "Empty",
@@ -93,6 +94,86 @@ class Grid {
     await this.whiteningAll();
   }
 
+  async genPrim() {
+    await this.genWalls();
+    await this.whiteningAll();
+    await this.prim();
+  }
+
+  async prim() {
+    enum Direction {
+      N,
+      S,
+      E,
+      W,
+    }
+
+    const enqueueFrontiers = (frontiers: Set<Cell>) => {
+      frontiers.forEach((cell: Cell) => cell.enqueue());
+    };
+
+    const adjacentFrontiers = (cell: Cell): Set<Cell> => {
+      let x = cell.col;
+      let y = cell.row;
+      let newFrontiers: Set<Cell> = new Set();
+      this.cells[y]?.[x + 2]?.isVisited === false && // right
+        newFrontiers.add(this.cells[y][x + 2]);
+      this.cells[y]?.[x - 2]?.isVisited === false && // left
+        newFrontiers.add(this.cells[y][x - 2]);
+      this.cells[y + 2]?.[x]?.isVisited === false && // down
+        newFrontiers.add(this.cells[y + 2][x]);
+      this.cells[y - 2]?.[x]?.isVisited === false && // up
+        newFrontiers.add(this.cells[y - 2][x]);
+
+      return newFrontiers;
+    };
+
+    const mergeWithClosestVisited = (source: Cell) => {
+      let wallCells: Map<Direction, Cell> = new Map();
+      this.cells[source.row]?.[source.col + 2]?.isVisited &&
+        wallCells.set(Direction.N, this.cells[source.row][source.col + 1]); // up
+      this.cells[source.row]?.[source.col - 2]?.isVisited &&
+        wallCells.set(Direction.S, this.cells[source.row][source.col - 1]); // down
+      this.cells[source.row + 2]?.[source.col]?.isVisited &&
+        wallCells.set(Direction.E, this.cells[source.row + 1][source.col]); // right
+      this.cells[source.row - 2]?.[source.col]?.isVisited &&
+        wallCells.set(Direction.W, this.cells[source.row - 1][source.col]); // left
+
+      if (wallCells.size !== 0) {
+        let directions = [...wallCells.keys()];
+        let randIdx = genRandNumber(0, directions.length - 1);
+        let direction: Direction = directions[randIdx];
+        let wall = wallCells.get(direction);
+        if (wall) {
+          wall.visit();
+          wall.setEmpty();
+        }
+      }
+    };
+
+    const xRand = genRandEvenNumber(0, this.cells[0].length);
+    const yRand = genRandEvenNumber(0, this.cells.length);
+    let frontiers: Set<Cell> = new Set([this.cells[yRand][xRand]]);
+    enqueueFrontiers(frontiers);
+
+    while (frontiers.size !== 0) {
+      let randFrontierIdx = genRandNumber(0, frontiers.size - 1);
+      let sourceFrontier = [...frontiers][randFrontierIdx];
+      frontiers.delete(sourceFrontier);
+
+      let foundFrontiers = adjacentFrontiers(sourceFrontier);
+      foundFrontiers.forEach((frontier: Cell) => frontier.enqueue());
+      frontiers = new Set([...frontiers, ...foundFrontiers]);
+
+      mergeWithClosestVisited(sourceFrontier);
+
+      sourceFrontier.setEmpty();
+      sourceFrontier.dequeue();
+      sourceFrontier.visit();
+      await delayFn();
+    }
+  }
+
   async kruskal() {
     enum Direction {
       E,
@@ -139,9 +220,18 @@ class Grid {
 
     const colorizeTree = async (node: Tree<Cell>, color: string) => {
       const root = node.root;
+      if (root.value.color === color) return;
       for (let currentNode of root.postOrderTraversal()) {
+        currentNode.value.animate();
         currentNode.value.colorize(color);
         await delayFn();
+      }
+    };
+
+    const deanimateTree = async (node: Tree<Cell>) => {
+      const root = node.root;
+      for (let currentNode of root.postOrderTraversal()) {
+        currentNode.value.deanimate();
       }
     };
 
@@ -169,14 +259,14 @@ class Grid {
         set2 = sets[cell.row][cell.col];
       }
 
-      console.log(set1.root.totalNodes());
-      console.log(set2.root.totalNodes());
       if (!set1.connected(set2)) {
         cell.setEmpty();
         this.cells[ny][nx].setEmpty();
         this.cells[wy][wx].setEmpty();
         cell.assignColor();
         set2.connect(this.cells[wy][wx]);
+        this.cells[wy][wx].color = set1.root.value.color;
+        await deanimateTree(set2);
         await colorizeTree(set2, set1.root.value.color);
         set1.connect(set2);
         await delayFn();
@@ -379,6 +469,7 @@ class Grid {
 
 class Cell {
   isVisited: boolean;
+  isAnimated: boolean;
   entity: Entity;
   row: number;
   col: number;
@@ -389,6 +480,7 @@ class Cell {
     this.row = row;
     this.col = col;
     this.isVisited = false;
+    this.isAnimated = true;
     this.entity = Entity.Empty;
     this.poke = new Date();
     this.color = "";
@@ -425,6 +517,16 @@ class Cell {
 
   colorize(color: string) {
     this.color = color;
+    this.updatePoke();
+  }
+
+  deanimate() {
+    this.isAnimated = false;
+    this.updatePoke();
+  }
+
+  animate() {
+    this.isAnimated = true;
     this.updatePoke();
   }
 
